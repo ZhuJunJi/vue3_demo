@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite --open",
     "build": "vue-tsc && vite build",
+    "build:test": "vue-tsc && vite build --mode test",
+    "build:prod": "vue-tsc && vite build --mode production",
     "preview": "vite preview",
     "lint:eslint": "eslint --fix src",
     "lint:format": "prettier --write --log-level warn \"src/**/*.{js,ts,json,tsx,css,less,vue,html,md}\"",
@@ -40,6 +42,7 @@
     "typescript": "^5.2.2",
     "typescript-eslint": "^7.7.1",
     "vite": "^5.2.0",
+    "vite-plugin-svg-icons": "^2.0.1",
     "vue-tsc": "^2.0.6"
   }
 }
