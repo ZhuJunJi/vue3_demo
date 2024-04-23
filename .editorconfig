@@ -1,0 +1,16 @@
+# Editor configuration, see http://editorconfig.org
+root = true
+# 表示所有文件适用
+[*]
+# Set to latin1, utf-8, utf-8-bom, utf-16be or utf-16le to control the character set. Use of utf-8-bom is discouraged.
+charset = utf-8
+# Set to tab or space to use hard tabs or soft tabs respectively. The values are case insensitive.
+indent_style = space
+# 缩进大小
+indent_size = 2
+# Set to lf, cr, or crlf to control how line breaks are represented. The values are case insensitive.
+end_of_line = lf
+# Set to true ensure file ends with a newline when saving and false to ensure it doesn’t.
+insert_final_newline = true
+# Set to true to remove all whitespace characters preceding newline characters in the file and false to ensure it doesn’t.
+trim_trailing_whitespace = true
