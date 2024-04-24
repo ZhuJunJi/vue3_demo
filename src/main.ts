@@ -4,6 +4,7 @@ import ElementPlus from 'element-plus'
 import globalComonet from './components'
 import 'element-plus/dist/index.css'
 import 'virtual:svg-icons-register'
+import '@/styles/index.scss'
 
 const app = createApp(App)
 
