@@ -4,9 +4,9 @@ export default (config?: MockConfig) => {
 
   return [
     {
-      url: '/api/createUser',
+      url: '/dev-api/createUser',
       method: 'post',
-      response: ({ body, query }:any) => {
+      response: ({ body, query }: any) => {
         console.log('body>>>>>>>>', body)
         console.log('query>>>>>>>>', query)
         console.log('config.ent>>>>>>>>', config?.env)

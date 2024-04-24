@@ -18,8 +18,8 @@
 </template>
 
 <script setup lang="ts" name="App">
+	import serviceAxios from '@/utils/request'
 	import { reactive } from 'vue'
-	import axios from 'axios'
 
 	let user = reactive({
 		show: false,
@@ -27,15 +27,17 @@
 
 	const createUser = () => {
 		user.show = true
-		axios
-			.post('/api/createUser', {
-				name: 'vben',
-				gender: 'man',
-			})
-			.then(({ data }) => {
-				Object.assign(user, { ...data })
-				user.show = false
-			})
+		serviceAxios({
+			url: '/createUser',
+			method: 'post',
+			data: {
+				username: 'x',
+				password: '123456',
+			},
+		}).then(({ data }) => {
+			Object.assign(user, { ...data })
+			user.show = false
+		})
 	}
 </script>
 
