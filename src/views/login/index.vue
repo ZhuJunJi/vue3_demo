@@ -36,12 +36,15 @@
 	import { ref, reactive } from 'vue'
 	import type { LoginReq } from '@/api/user/type'
 	import { useUserStore } from '@/store/modules/user'
-	import { useRouter } from 'vue-router'
+	import { useRouter, useRoute } from 'vue-router'
 	import { ElNotification } from 'element-plus'
 	import { useDebouncedRef } from '@/utils/useDebouncedRef'
 	import type { FormRules } from 'element-plus'
+	import { sortUserPlugins } from 'vite'
 
 	const $router = useRouter()
+	const $route = useRoute()
+
 	const userStore = useUserStore()
 
 	let loginBtnLoading = useDebouncedRef(false, 1000)
@@ -54,11 +57,18 @@
 		password: '',
 	})
 
+	const validateUsername = (rule: any, value: string, callback: Function) => {
+		if (value === '') {
+			callback(new Error('Please input the Username'))
+		} else if (value.length < 3 || value.length > 10) {
+			callback(new Error('Length should be 3 to 10'))
+		} else {
+			callback()
+		}
+	}
+
 	const rules = reactive<FormRules<LoginReq>>({
-		username: [
-			{ required: true, message: 'Please input Username', trigger: 'blur' },
-			{ min: 3, max: 10, message: 'Length should be 3 to 10', trigger: ['change', 'blur'] },
-		],
+		username: [{ validator: validateUsername, trigger: ['change', 'blur'] }],
 		password: [
 			{ required: true, message: 'Please input Password', trigger: 'blur' },
 			{ min: 6, max: 12, message: 'Length should be 6 to 12', trigger: ['change', 'blur'] },
@@ -78,7 +88,8 @@
 							type: 'success',
 							message: '登录成功',
 						})
-						$router.push('/')
+
+						$router.push({ path: ($route.query.redirect as string) || '/' })
 						loginBtnLoading.value = false
 					})
 					.catch((error) => {

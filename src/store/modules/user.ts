@@ -6,6 +6,7 @@ import { reactive } from 'vue'
 export const useUserStore = defineStore('User', () => {
 	let store = reactive({
 		token: localStorage.getItem('TOKEN') || '',
+		username: '',
 	})
 
 	const login = async (data: LoginReq) => {
@@ -21,7 +22,13 @@ export const useUserStore = defineStore('User', () => {
 		return Promise.reject(res.message)
 	}
 
+	const storeClear = () => {
+		store.token = ''
+		store.username = ''
+		localStorage.removeItem('TOKEN')
+	}
+
 	const getToken = () => store.token
 
-	return { store, login, getToken }
+	return { store, login, getToken, storeClear }
 })

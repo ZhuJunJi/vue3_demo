@@ -4,6 +4,18 @@ import type { ApiResult } from '@/api/ApiResult'
 
 export default (config?: MockConfig) => {
 
+  interface User {
+    id: number,
+    username: string,
+    password?: string,
+  }
+
+  const users: Array<User> = [
+    { id: 1, username: 'admin', password: '123456' },
+    { id: 2, username: 'x', password: '123456' },
+    { id: 3, username: 'Vue3', password: '123456' },
+  ]
+
   return [
     {
       url: '/dev-api/createUser',
@@ -32,8 +44,10 @@ export default (config?: MockConfig) => {
           data: { token: "token 123456" },
         }
 
-        if (username === 'admin' && password === '123456') {
-          return result
+        for (const user of users) {
+          if (user.username === username && user.password === password) {
+            return result
+          }
         }
 
         result.code = 1
@@ -44,12 +58,13 @@ export default (config?: MockConfig) => {
     {
       url: '/dev-api/user/info',
       method: 'get',
-      response: ({ query }: { query: { id: string } }) => {
-        console.log("获取用户信息 id:", query.id)
+      response: () => {
+
+
         return {
           code: 0,
           message: 'ok',
-          data: { username: "x", age: 20, address: "xxx" },
+          data: { id: 1, username: "Vue3" },
         } as ApiResult<User>
       },
     },
