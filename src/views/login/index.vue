@@ -40,7 +40,6 @@
 	import { ElNotification } from 'element-plus'
 	import { useDebouncedRef } from '@/utils/useDebouncedRef'
 	import type { FormRules } from 'element-plus'
-	import { sortUserPlugins } from 'vite'
 
 	const $router = useRouter()
 	const $route = useRoute()
@@ -57,7 +56,7 @@
 		password: '',
 	})
 
-	const validateUsername = (rule: any, value: string, callback: Function) => {
+	const validateUsername = (_rule: any, value: string, callback: Function) => {
 		if (value === '') {
 			callback(new Error('Please input the Username'))
 		} else if (value.length < 3 || value.length > 10) {

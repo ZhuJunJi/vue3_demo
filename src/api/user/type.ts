@@ -8,7 +8,6 @@ export interface LoginRes {
 }
 
 export interface User {
+	id: number
 	username: string
-	age: number
-	address: string
 }
