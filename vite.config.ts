@@ -7,6 +7,8 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default ({ command, mode }: ConfigEnv): UserConfigExport => {
+
+  const env = loadEnv(mode, process.cwd())
   return {
     plugins: [
       vue(),
@@ -35,5 +37,18 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         }
       }
     },
+    server: {
+      host: "zhujunji.com",
+      port: 80,
+      proxy: {
+        [env.VITE_APP_BASE_API]: {
+          target: env.VITE_SERVER,
+          // 是否代理跨域
+          changeOrigin: true,
+          // 路径重写
+          rewrite: (path) => path.replace(/^\/api/, '')
+        }
+      }
+    }
   }
 }

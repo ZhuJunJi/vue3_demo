@@ -1,63 +1,87 @@
 <template>
-	<el-radio-group v-model="isCollapse" style="margin-bottom: 20px">
-		<el-radio-button :value="false">expand</el-radio-button>
-		<el-radio-button :value="true">collapse</el-radio-button>
-	</el-radio-group>
-	<el-menu default-active="2" class="el-menu-vertical-demo" :collapse="isCollapse">
-		<el-sub-menu index="1">
-			<template #title>
-				<el-icon>
-					<location />
-				</el-icon>
-				<span>Navigator One</span>
-			</template>
-			<el-menu-item-group>
-				<template #title><span>Group One</span></template>
-				<el-menu-item index="1-1">item one</el-menu-item>
-				<el-menu-item index="1-2">item two</el-menu-item>
-			</el-menu-item-group>
-			<el-menu-item-group title="Group Two">
-				<el-menu-item index="1-3">item three</el-menu-item>
-			</el-menu-item-group>
-			<el-sub-menu index="1-4">
-				<template #title><span>item four</span></template>
-				<el-menu-item index="1-4-1">item one</el-menu-item>
-			</el-sub-menu>
-		</el-sub-menu>
-		<el-menu-item index="2">
-			<el-icon><icon-menu /></el-icon>
-			<template #title>Navigator Two</template>
-		</el-menu-item>
-		<el-menu-item index="3" disabled>
-			<el-icon>
-				<document />
-			</el-icon>
-			<template #title>Navigator Three</template>
-		</el-menu-item>
-		<el-menu-item index="4">
-			<el-icon>
-				<setting />
-			</el-icon>
-			<template #title>Navigator Four</template>
-		</el-menu-item>
-	</el-menu>
+	<el-card class="userCard">
+		<template #header>
+			<div class="card-header">
+				<el-button type="primary" :icon="Plus">创建用户</el-button>
+			</div>
+		</template>
+
+		<el-table class="userTable" max-height="1000" stripe :data="userList">
+			<el-table-column prop="username" label="用户名称" width="150" fixed />
+			<el-table-column prop="nickname" label="昵称" width="120" />
+			<el-table-column prop="email" label="邮箱" width="220" />
+			<el-table-column prop="loginIp" label="登录 IP" width="120" />
+			<el-table-column prop="loginTime" label="登录时间" width="200" />
+			<el-table-column label="允许登录" width="200">
+				<template #="{ row }">
+					{{ flagToLabel(row.loginFlag) }}
+				</template>
+			</el-table-column>
+			<el-table-column prop="updateTime" label="修改时间" width="200" />
+			<el-table-column prop="createTime" label="创建时间" width="150" />
+			<el-table-column label="操作" width="200" fixed="right">
+				<template #default>
+					<el-button link type="primary" size="small"> 详情 </el-button>
+					<el-button link type="primary" size="small">编辑</el-button>
+				</template>
+			</el-table-column>
+		</el-table>
+		<template #footer>
+			<div class="demo-pagination-block">
+				<el-pagination
+					v-model:current-page="currentPage"
+					v-model:page-size="pageSize"
+					:page-sizes="[1, 10, 50, 100]"
+					:small="small"
+					:disabled="disabled"
+					:background="background"
+					layout="prev, pager, next, jumper, ->, sizes, total"
+					v-model:total="total"
+					@size-change="handleSizeChange"
+					@current-change="handleCurrentChange"
+				/>
+			</div>
+		</template>
+	</el-card>
 </template>
 
 <script lang="ts" setup name="User">
-	import { ref } from 'vue'
-	import { Document, Menu as IconMenu, Location, Setting } from '@element-plus/icons-vue'
+	import { ref, onMounted, reactive } from 'vue'
+	import { Plus } from '@element-plus/icons-vue'
+	import { pageQueryApi } from '@/api/user'
+	import type { User } from '@/api/user/type'
+	import FormDrawer from './FormDrawer.vue'
 
-	const isCollapse = ref(true)
+	let currentPage = ref(1)
+	let pageSize = ref(10)
+	let total = ref(0)
+	const small = ref(false)
+	const background = ref(false)
+	const disabled = ref(false)
+	const userList: Array<User> = reactive([])
+
+	const handleSizeChange = (val: number) => {
+		pageSize.value = val
+		pageQuery()
+	}
+	const handleCurrentChange = (val: number) => {
+		currentPage.value = val
+		pageQuery()
+	}
+
+	const flagToLabel = (value: boolean) => (value ? '是' : '否')
+
+	onMounted(async () => {
+		pageQuery()
+	})
+
+	async function pageQuery() {
+		const res = await pageQueryApi({ pageSize: pageSize.value, pageNumber: currentPage.value })
+		currentPage.value = res.data.currentPage
+		total.value = res.data.total
+		userList.splice(0, userList.length)
+		res.data.dataList.forEach((user) => userList.push(user))
+	}
 </script>
 
-<style>
-	.el-menu-vertical-demo:not(.el-menu--collapse) {
-		width: 200px;
-		min-height: 80vh;
-		max-height: 80vh;
-	}
-
-	.el-menu--collapse {
-		min-height: 80vh;
-	}
-</style>
+<style scoped lang="scss"></style>

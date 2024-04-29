@@ -87,7 +87,6 @@
 							type: 'success',
 							message: '登录成功',
 						})
-
 						$router.push({ path: ($route.query.redirect as string) || '/' })
 						loginBtnLoading.value = false
 					})

@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
-import { loginApi } from '@/api/user'
+import { loginApi, getUserInfoApi } from '@/api/user'
 import type { LoginReq } from '@/api/user/type'
 import { reactive } from 'vue'
+import type { AxiosRequestConfig } from 'axios'
+import { ElNotification } from 'element-plus'
 
 export const useUserStore = defineStore('User', () => {
 	let store = reactive({
@@ -10,16 +12,36 @@ export const useUserStore = defineStore('User', () => {
 	})
 
 	const login = async (data: LoginReq) => {
-		const res = await loginApi(data)
-
-		if (res.code === 0 && res.data) {
-			const { token } = res.data
+		try {
+			const res = await loginApi(data)
+			const token = res.data
 			store.token = token
 			localStorage.setItem('TOKEN', token)
-			return res.data
+			try {
+				await getUserInfo()
+				return res.data
+			} catch (error) {
+				// do nothing
+			}
+		} catch (error) {
+			storeClear()
+			return Promise.reject(error)
 		}
+	}
 
-		return Promise.reject(res.message)
+	const getUserInfo = async (config?: AxiosRequestConfig) => {
+		try {
+			const res = await getUserInfoApi(config)
+			store.username = res.data.username
+			return res.data
+		} catch (error: any) {
+			storeClear()
+			ElNotification({
+				type: 'error',
+				message: error,
+			})
+			return Promise.reject(error)
+		}
 	}
 
 	const storeClear = () => {
@@ -30,5 +52,5 @@ export const useUserStore = defineStore('User', () => {
 
 	const getToken = () => store.token
 
-	return { store, login, getToken, storeClear }
+	return { store, login, getToken, getUserInfo, storeClear }
 })

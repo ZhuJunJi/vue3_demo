@@ -59,8 +59,6 @@ export default (config?: MockConfig) => {
       url: '/dev-api/user/info',
       method: 'get',
       response: () => {
-
-
         return {
           code: 0,
           message: 'ok',

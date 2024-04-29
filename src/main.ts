@@ -8,6 +8,7 @@ import '@/styles/index.scss'
 import { router } from './router'
 import { pinia } from './store'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import './permisson'
 
 const app = createApp(App)
 
