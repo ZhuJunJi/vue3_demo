@@ -23,7 +23,7 @@ serviceAxios.interceptors.request.use(
 serviceAxios.interceptors.response.use(
 	(response) => {
 		const res = response.data
-		if (res.code === '0' && res.data) {
+		if (res.code === '0') {
 			return { ...res }
 		}
 		return Promise.reject(res.message)
@@ -37,9 +37,8 @@ serviceAxios.interceptors.response.use(
 				type: 'error',
 				message: '登录失效!',
 			})
-		} else {
-			return Promise.reject(error)
 		}
+		return Promise.reject(error)
 	},
 )
 

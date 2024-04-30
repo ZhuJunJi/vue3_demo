@@ -3,6 +3,20 @@ export interface LoginReq {
 	password: string
 }
 
+export interface CreateUserReq {
+	username: string
+	nickname: string
+	email: string
+	phone: string
+	mobile: string
+	photo: string
+	remarks: string
+}
+
+export interface UpdateUserReq extends CreateUserReq {
+	id: number
+}
+
 export interface LoginRes {
 	token: string
 }
