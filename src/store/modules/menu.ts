@@ -20,15 +20,8 @@ export const useMenuStore = defineStore('Menu', () => {
 			childrenList: [
 				{ id: 3, name: '用户管理', path: '/system/user', icon: '', childrenList: [] },
 				{ id: 4, name: '角色管理', path: '/system/role', icon: '', childrenList: [] },
-				{ id: 5, name: '权限管理', path: '/system/permisson', icon: '', childrenList: [] },
+				{ id: 5, name: '资源管理', path: '/system/resource', icon: '', childrenList: [] },
 			],
-		},
-		{
-			id: 6,
-			name: '商品管理',
-			path: '/product',
-			icon: 'Shop',
-			childrenList: [{ id: 7, name: '商品管理', path: '/product/management', icon: '', childrenList: [] }],
 		},
 	]
 

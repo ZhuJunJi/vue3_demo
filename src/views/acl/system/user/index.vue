@@ -1,43 +1,43 @@
 <template>
-	<el-card class="userCard">
+	<el-card style="width: 100%; min-width: 1000px">
 		<template #header>
 			<div class="card-header">
-				<el-button type="primary" :icon="Plus" @click="openForm({ type: UserFromType.CREATE })">创建用户</el-button>
+				<el-button type="primary" :icon="Plus" @click="openForm({ type: FormType.CREATE })">创建用户</el-button>
 			</div>
 		</template>
 		<el-table class="userTable" max-height="1000" stripe :data="userList">
-			<el-table-column prop="username" label="用户名称" width="150" fixed />
-			<el-table-column prop="nickname" label="昵称" width="120" />
-			<el-table-column prop="email" label="邮箱" width="220" />
-			<el-table-column prop="loginIp" label="登录 IP" width="120" />
-			<el-table-column prop="loginTime" label="登录时间" width="200" />
-			<el-table-column label="允许登录" width="200">
+			<el-table-column prop="username" label="用户名称" min-width="150" fixed />
+			<el-table-column prop="nickname" label="昵称" min-width="120" />
+			<el-table-column prop="email" label="邮箱" min-width="220" />
+			<el-table-column prop="loginIp" label="登录 IP" min-width="120" />
+			<el-table-column prop="loginTime" label="登录时间" min-width="180" />
+			<el-table-column label="允许登录" min-width="200">
 				<template #="{ row }">
 					{{ flagToLabel(row.loginFlag) }}
 				</template>
 			</el-table-column>
-			<el-table-column prop="updateTime" label="修改时间" width="200" />
-			<el-table-column prop="createTime" label="创建时间" width="150" />
-			<el-table-column label="操作" width="200" fixed="right">
+			<el-table-column prop="updateTime" label="修改时间" min-width="180" />
+			<el-table-column prop="createTime" label="创建时间" min-width="180" />
+			<el-table-column label="操作" fixed="right" min-width="180">
 				<template #="{ row }">
 					<el-button
 						link
 						type="success"
 						:disabled="disabled"
 						:icon="Tickets"
-						@click="showDetail(row.id, UserFromType.DETAIL)"
+						@click="showDetail(row.id, FormType.DETAIL)"
 					/>
 					<el-button
 						link
 						type="primary"
 						:disabled="disabled"
 						:icon="Edit"
-						@click="showDetail(row.id, UserFromType.UPDATE)"
+						@click="showDetail(row.id, FormType.UPDATE)"
 					/>
 
 					<el-popconfirm
 						:title="`确定删除用户:` + row.username"
-						width="200"
+						min-width="200"
 						:icon="WarnTriangleFilled"
 						@confirm="deleteUser(row.id)"
 					>
@@ -76,8 +76,8 @@
 	import { ElNotification } from 'element-plus'
 	import { useDebouncedRef } from '@/utils/useDebouncedRef'
 	import FormDrawer from './UserForm.vue'
-	import { UserFromType } from './index'
-	import type { UserFromInterface } from './index'
+	import { FormType } from '@/types'
+	import type { UserFromData } from './index'
 
 	onMounted(async () => {
 		pageQuery()
@@ -120,17 +120,11 @@
 					currentPage.value -= 1
 				}
 				pageQuery()
-			} catch (error) {
-				ElNotification({
-					title: 'Error',
-					message: error as string,
-					type: 'error',
-				})
-			}
+			} catch (error) {}
 		})
 	}
 
-	const showDetail = (id: number, type: UserFromType) => {
+	const showDetail = (id: number, type: FormType) => {
 		loadingWarpper(async () => {
 			try {
 				const { data } = await getUserByIdApi({ params: { id: id } })
@@ -144,30 +138,24 @@
 					})
 					pageQuery()
 				}
-			} catch (error) {
-				ElNotification({
-					title: 'Error',
-					message: error as string,
-					type: 'error',
-				})
-			}
+			} catch (error) {}
 		})
 	}
 
 	const formRef = ref()
-	// 打开用户表单抽屉
-	const openForm = (data: UserFromInterface) => {
+	// 打开表单抽屉
+	const openForm = (data: UserFromData) => {
 		formRef.value.open(data)
 	}
 
-	// 用户列表页面 loading 装饰
+	// 列表页面 loading 装饰
 	const loadingWarpper = async (fun: Function) => {
 		disabled.value = true
 		await fun()
 		disabled.value = false
 	}
 
-	// 分页查询用户列表
+	// 分页查询
 	const pageQuery = () => {
 		loadingWarpper(async () => {
 			const res = await pageQueryApi({ pageSize: pageSize.value, pageNumber: currentPage.value })

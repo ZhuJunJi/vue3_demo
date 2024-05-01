@@ -17,29 +17,22 @@
 				<el-form-item hidden v-if="formData.type === FormType.UPDATE" label="id" prop="id">
 					<el-input v-model="formData.id" autocomplete="off" />
 				</el-form-item>
-				<el-form-item label="账号" prop="username" :rules="[{ required: true, message: 'username is required' }]">
-					<el-input v-model="formData.username" type="text" autocomplete="off" />
-				</el-form-item>
-				<el-form-item label="昵称" prop="nickname" :rules="[{ required: true, message: 'nickname is required' }]">
-					<el-input v-model="formData.nickname" type="text" autocomplete="off" />
+				<el-form-item label="角色编码" prop="code" :rules="[{ required: true, message: 'code is required' }]">
+					<el-input v-model="formData.code" type="text" autocomplete="off" />
 				</el-form-item>
 				<el-form-item
-					label="邮件"
-					prop="email"
-					:rules="[
-						{
-							type: 'email',
-							message: 'Please input correct email addres',
-						},
-					]"
+					label="角色名称（中文）"
+					prop="nameZh"
+					:rules="[{ required: true, message: 'role name is required' }]"
 				>
-					<el-input v-model="formData.email" type="text" autocomplete="off" />
+					<el-input v-model="formData.nameZh" type="text" autocomplete="off" />
 				</el-form-item>
-				<el-form-item label="电话" prop="phone">
-					<el-input v-model="formData.phone" autocomplete="off" />
-				</el-form-item>
-				<el-form-item label="手机" prop="mobile">
-					<el-input v-model="formData.mobile" type="text" autocomplete="off" />
+				<el-form-item
+					label="角色名称（英文）"
+					prop="nameEn"
+					:rules="[{ required: true, message: 'role name is required' }]"
+				>
+					<el-input v-model="formData.nameEn" autocomplete="off" />
 				</el-form-item>
 				<el-form-item label="备注" prop="remarks">
 					<el-input v-model="formData.remarks" type="text" autocomplete="off" />
@@ -57,10 +50,10 @@
 	import type { DrawerProps, FormInstance } from 'element-plus'
 	import { ElNotification } from 'element-plus'
 	import { useDebouncedRef } from '@/utils/useDebouncedRef'
-	import { createUserApi, updateUserApi } from '@/api/user'
-	import type { UserCreate, UserUpdate } from '@/api/user/type'
+	import { createRoleApi, updateRoleApi } from '@/api/role'
+	import type { RoleCreate, RoleUpdate } from '@/api/role/type'
 	import { FormType } from '@/types'
-	import type { UserFromData } from './index'
+	import type { RoleFormData } from './index'
 
 	const drawer = ref(false)
 
@@ -75,11 +68,11 @@
 	function computeFormTitle(op: FormType) {
 		switch (op) {
 			case FormType.CREATE:
-				return '创建用户'
+				return '创建角色'
 			case FormType.UPDATE:
-				return '编辑用户'
+				return '编辑角色'
 			case FormType.DETAIL:
-				return '用户详情'
+				return '角色详情'
 			default:
 				throw new Error('wrong form type')
 		}
@@ -87,8 +80,14 @@
 
 	const formRef = ref<FormInstance>()
 
-	const formData: UserFromData = reactive({
+	const formData: RoleFormData = reactive({
 		type: FormType.CREATE,
+		id: undefined,
+		code: '',
+		nameZh: '',
+		nameEn: '',
+		usable: undefined,
+		remarks: '',
 	})
 
 	defineProps(['formData'])
@@ -105,17 +104,17 @@
 	const submit = () => {
 		formRef.value?.validate().then(() => {
 			if (formData.type === FormType.CREATE) {
-				createUser()
+				createRole()
 			}
 			if (formData.type === FormType.UPDATE) {
-				editUser()
+				editRole()
 			}
 		})
 	}
 
-	const createUser = () => {
+	const createRole = () => {
 		loginBtnLoading.value = true
-		createUserApi(formData as UserCreate)
+		createRoleApi(formData as RoleCreate)
 			.then(() => {
 				ElNotification({
 					type: 'success',
@@ -134,9 +133,9 @@
 			})
 	}
 
-	const editUser = () => {
+	const editRole = () => {
 		loginBtnLoading.value = true
-		updateUserApi(formData as UserUpdate)
+		updateRoleApi(formData as RoleUpdate)
 			.then(() => {
 				ElNotification({
 					type: 'success',
@@ -155,7 +154,7 @@
 			})
 	}
 
-	const open = (data: UserFromData) => {
+	const open = (data: RoleFormData) => {
 		resetForm(formRef.value)
 		Object.assign(formData, data)
 		drawer.value = true

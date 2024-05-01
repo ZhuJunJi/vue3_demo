@@ -43,9 +43,9 @@ export const constantRoutes = [
 				name: 'Role',
 			},
 			{
-				path: '/system/permisson',
-				component: () => import('@/views/acl/system/permisson/index.vue'),
-				name: 'Permisson',
+				path: '/system/resource',
+				component: () => import('@/views/acl/system/resource/index.vue'),
+				name: 'Resource',
 			},
 		],
 	},

@@ -6,7 +6,6 @@
 				<Menu :menuList="menuStore.getMenuList()"></Menu>
 			</el-menu>
 		</div>
-
 		<div class="layout_tabbar" :class="{ collapse: settingStore.isCollapse }">
 			<Tabbar></Tabbar>
 		</div>
@@ -69,6 +68,7 @@
 			background-color: white;
 			padding: 20px;
 			overflow: auto;
+			display: flex;
 			transition-duration: 0.55s;
 
 			&.collapse {

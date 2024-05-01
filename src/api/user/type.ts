@@ -1,9 +1,15 @@
+import type { PageQuery } from '@/types'
+
 export interface LoginReq {
 	username: string
 	password: string
 }
 
-export interface CreateUserReq {
+export interface LoginRes {
+	token: string
+}
+
+export interface UserCreate {
 	username: string
 	nickname: string
 	email: string
@@ -13,18 +19,12 @@ export interface CreateUserReq {
 	remarks: string
 }
 
-export interface UpdateUserReq extends CreateUserReq {
+export interface UserUpdate extends UserCreate {
 	id: number
 }
 
-export interface LoginRes {
-	token: string
-}
-
-export interface UserPageQuery {
+export interface UserPageQuery extends PageQuery {
 	username?: string
-	pageSize: number
-	pageNumber: number
 }
 
 export interface User {
@@ -43,11 +43,4 @@ export interface User {
 	updateName: string
 	updateTime: string
 	remarks: string
-}
-
-export interface PageInfo<T> {
-	total: number
-	pageSize: number
-	currentPage: number
-	dataList: Array<T>
 }

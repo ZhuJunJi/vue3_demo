@@ -1,6 +1,6 @@
 import serviceAxios from '@/utils/request'
-import type { LoginReq, CreateUserReq, User, UserPageQuery, PageInfo } from './type'
-import type { ApiResult } from '../ApiResult'
+import type { LoginReq, UserCreate, User, UserPageQuery } from './type'
+import type { ApiResult, PageInfo } from '@/types'
 import type { AxiosRequestConfig } from 'axios'
 
 enum API {
@@ -21,9 +21,9 @@ export const pageQueryApi = (data: UserPageQuery) =>
 export const deleteUserApi = (config?: AxiosRequestConfig) =>
 	serviceAxios.delete<ApiResult<boolean>>(API.BASE_USER, config)
 
-export const createUserApi = (data: CreateUserReq) => serviceAxios.post<any, ApiResult<User>>(API.BASE_USER, data)
+export const createUserApi = (data: UserCreate) => serviceAxios.post<any, ApiResult<User>>(API.BASE_USER, data)
 
-export const updateUserApi = (data: CreateUserReq) => serviceAxios.put<any, ApiResult<User>>(API.BASE_USER, data)
+export const updateUserApi = (data: UserCreate) => serviceAxios.put<any, ApiResult<User>>(API.BASE_USER, data)
 
 export const getUserByIdApi = (config?: AxiosRequestConfig) =>
 	serviceAxios.get<any, ApiResult<User>>(API.BASE_USER, config)

@@ -1,10 +1,6 @@
-export enum UserFromType {
-	CREATE,
-	UPDATE,
-	DETAIL,
-}
+import { FormType } from '@/types'
 
-export interface UserFromInterface {
+export interface UserFromData {
 	id?: number
 	photo?: string
 	username?: string
@@ -13,5 +9,5 @@ export interface UserFromInterface {
 	phone?: string
 	mobile?: string
 	remarks?: string
-	type: UserFromType
+	type: FormType
 }

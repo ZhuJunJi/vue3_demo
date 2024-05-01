@@ -1,8 +1,6 @@
 <template>
 	<router-view v-slot="{ Component }">
-		<transition name="fade">
-			<component :is="Component" v-if="isShow"></component>
-		</transition>
+		<component :is="Component" v-if="isShow"> </component>
 	</router-view>
 </template>
 
@@ -22,16 +20,4 @@
 	})
 </script>
 
-<style scoped>
-	.fade-enter-from {
-		opacity: 0;
-	}
-
-	.fade-enter-active {
-		transition: all 1s;
-	}
-
-	.fade-enter-to {
-		opacity: 1;
-	}
-</style>
+<style scoped></style>
