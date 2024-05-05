@@ -3,11 +3,11 @@
 }
 
 ::-webkit-scrollbar-track {
-  background-color: $base-log-background-color;
+  background-color: slategrey;
 }
 
 ::-webkit-scrollbar-thumb {
   width: 10px;
-  background-color: white;
+  background-color: rgb(248, 241, 241);
   border-radius: 2px;
 }

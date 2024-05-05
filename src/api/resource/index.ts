@@ -26,4 +26,4 @@ export const pageQueryApi = (data: ResourcePageQuery) =>
 	serviceAxios.post<any, ApiResult<PageInfo<Resource>>>(API.RESOURCE_PAGE_QUERY_URL, data)
 
 export const getTreeListApi = (config?: AxiosRequestConfig) =>
-	serviceAxios.get<any, ApiResult<Array<TreeNode<number, string>>>>(API.RESOURCE_TREE_LIST, config)
+	serviceAxios.get<any, ApiResult<Array<TreeNode<number, Resource>>>>(API.RESOURCE_TREE_LIST, config)

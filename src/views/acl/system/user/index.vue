@@ -39,6 +39,7 @@
 						:title="`确定删除用户:` + row.username"
 						min-width="200"
 						:icon="WarnTriangleFilled"
+						width="200"
 						@confirm="deleteUser(row.id)"
 					>
 						<template #reference>

@@ -1,5 +1,5 @@
 <template>
-	<el-drawer v-model="drawer" :direction="direction" size="25%">
+	<el-drawer v-model="drawer" :direction="direction" size="25%" @close="formRef?.resetFields()">
 		<template #header>
 			<h4>{{ title }}</h4>
 		</template>
@@ -94,11 +94,6 @@
 
 	let loginBtnLoading = useDebouncedRef(false, 1000)
 
-	const resetForm = (formEl: FormInstance | undefined) => {
-		if (!formEl) return
-		formEl.resetFields()
-	}
-
 	const emits = defineEmits(['submitSuccess'])
 
 	const submit = () => {
@@ -155,7 +150,6 @@
 	}
 
 	const open = (data: RoleFormData) => {
-		resetForm(formRef.value)
 		Object.assign(formData, data)
 		drawer.value = true
 	}

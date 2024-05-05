@@ -1,10 +1,13 @@
 <template>
-	<div style="width: 100%; min-width: 1000px">
+	<div style="width: 100%; min-width: 960px">
 		<el-row :gutter="20">
 			<el-col :span="4">
-				<el-card style="min-height: 94.5vh">
+				<el-card style="min-height: 92vh">
 					<el-tree :node-click="clikeNode" :props="props" :data="treeNodeList">
 						<template #default="{ node, data }">
+							<el-icon v-if="data.value.icon">
+								<component :is="data.value.icon"></component>
+							</el-icon>
 							<span class="custom-tree-node">
 								<span @click="clikeNode(node, data)">{{ node.label }}</span>
 							</span>
@@ -13,9 +16,20 @@
 				</el-card>
 			</el-col>
 			<el-col :span="20">
-				<el-card style="min-height: 94.5vh">
+				<el-card style="min-height: 92vh">
+					<template #header>
+						<div class="card-header">
+							<el-button
+								type="primary"
+								:icon="Plus"
+								@click="openForm({ formType: FormType.CREATE, parentId: selectTreeNode?.id || 0 })"
+								>创建资源</el-button
+							>
+						</div>
+					</template>
 					<el-table :data="resourceList">
 						<el-table-column prop="nameZh" label="资源名称" min-width="120" />
+						<el-table-column prop="nameEn" label="Resource Name" min-width="200" />
 						<el-table-column prop="type" label="资源类型" min-width="120" />
 						<el-table-column prop="path" label="Path" min-width="180" />
 						<el-table-column prop="sort" label="Sort" min-width="60" />
@@ -24,10 +38,27 @@
 						<el-table-column prop="permissonCode" label="权限编号" min-width="180" />
 						<el-table-column label="操作" fixed="right" min-width="180">
 							<template #="{ row }">
-								<el-button link type="success" :disabled="disabled" :icon="Tickets" />
-								<el-button link type="primary" :disabled="disabled" :icon="Edit" />
+								<el-button
+									link
+									type="success"
+									:disabled="disabled"
+									@click="showDetail(row.id, FormType.DETAIL)"
+									:icon="Tickets"
+								/>
+								<el-button
+									link
+									type="primary"
+									:disabled="disabled"
+									@click="showDetail(row.id, FormType.UPDATE)"
+									:icon="Edit"
+								/>
 
-								<el-popconfirm :title="`确定删除资源:` + row.nameZh" min-width="180" :icon="WarnTriangleFilled">
+								<el-popconfirm
+									:title="`确定删除资源:` + row.nameZh"
+									width="200"
+									:icon="WarnTriangleFilled"
+									@confirm="deleteResource(row.id)"
+								>
 									<template #reference>
 										<el-button link type="danger" :disabled="disabled" :icon="Delete" />
 									</template>
@@ -53,17 +84,22 @@
 			</el-col>
 		</el-row>
 	</div>
+	<ResourceForm ref="formRef" @submitSuccess="pageQuery(resourcePageQuery)"></ResourceForm>
 </template>
 
 <script setup lang="ts" name="Resource">
-	import { Delete, Edit, Plus, Tickets, WarnTriangleFilled } from '@element-plus/icons-vue'
-	import { ref, onMounted, onUnmounted, reactive } from 'vue'
+	import { Plus, Delete, Edit, Tickets, WarnTriangleFilled } from '@element-plus/icons-vue'
+	import { ref, onMounted, reactive } from 'vue'
 	import type Node from 'element-plus/es/components/tree/src/model/node'
 	import type { Resource, ResourcePageQuery } from '@/api/resource/type'
-	import { getTreeListApi, pageQueryApi } from '@/api/resource'
+	import { getTreeListApi, pageQueryApi, getResourceByIdApi, deleteResourceApi } from '@/api/resource'
 	import { TreeNode } from '@/types'
 	import { ElTree } from 'element-plus'
 	import { useDebouncedRef } from '@/utils/useDebouncedRef'
+	import ResourceForm from './ResourceFrom.vue'
+	import { FormType } from '@/types'
+	import { ElNotification } from 'element-plus'
+	import { ResourceFormData } from '.'
 
 	const resourceList = reactive<Resource[]>([])
 	const props = {
@@ -74,7 +110,9 @@
 		isLeaf: 'leaf',
 	}
 
-	let treeNodeList = ref<TreeNode<number, string>[]>([])
+	let selectTreeNode = ref<Resource | null>()
+
+	let treeNodeList = ref<TreeNode<number, Resource>[]>([])
 
 	onMounted(async () => {
 		const { data } = await getTreeListApi()
@@ -115,17 +153,79 @@
 	// 分页查询
 	const pageQuery = (resourcePageQuery: ResourcePageQuery) => {
 		loadingWarpper(async () => {
-			const res = await pageQueryApi(resourcePageQuery)
-			resourcePageQuery.pageNumber = res.data.currentPage
-			total.value = res.data.total
-			resourceList.splice(0, resourceList.length)
-			res.data.dataList.forEach((resource) => resourceList.push(resource))
+			try {
+				const res = await pageQueryApi(resourcePageQuery)
+				resourcePageQuery.pageNumber = res.data.currentPage
+				total.value = res.data.total
+				resourceList.splice(0, resourceList.length)
+				res.data.dataList.forEach((resource) => resourceList.push(resource))
+			} catch (error) {
+				ElNotification({
+					title: 'Error',
+					message: '分页查询资源列表失败!',
+					type: 'error',
+				})
+			}
 		})
 	}
 
-	const clikeNode = (node: Node, data: TreeNode<number, string>) => {
+	const clikeNode = (_node: Node, data: TreeNode<number, Resource>) => {
+		Object.assign(selectTreeNode, data)
 		resourcePageQuery.parentId = data.id
 		pageQuery(resourcePageQuery)
+	}
+
+	// 删除资源
+	const deleteResource = (id: number) => {
+		loadingWarpper(async () => {
+			try {
+				await deleteResourceApi({ data: { id: id } })
+				ElNotification({
+					title: 'Success',
+					type: 'success',
+					message: '删除成功',
+				})
+				if (resourceList.length == 1 && resourcePageQuery.pageNumber > 1) {
+					resourcePageQuery.pageNumber -= 1
+				}
+				pageQuery(resourcePageQuery)
+			} catch (error) {
+				ElNotification({
+					title: 'Error',
+					type: 'error',
+					message: error as string,
+				})
+			}
+		})
+	}
+
+	const showDetail = (id: number, formType: FormType) => {
+		loadingWarpper(async () => {
+			try {
+				const { data } = await getResourceByIdApi({ params: { id: id } })
+				if (data) {
+					openForm({ formType: formType, ...data })
+				} else {
+					ElNotification({
+						title: 'Error',
+						message: '获取资源详情失败!',
+						type: 'error',
+					})
+				}
+			} catch (error) {
+				ElNotification({
+					title: 'Error',
+					message: '获取资源详情失败!',
+					type: 'error',
+				})
+			}
+		})
+	}
+
+	const formRef = ref()
+	// 打开表单抽屉
+	const openForm = (data: ResourceFormData) => {
+		formRef.value.open(data)
 	}
 </script>
 

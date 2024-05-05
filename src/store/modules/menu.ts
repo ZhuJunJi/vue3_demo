@@ -23,6 +23,13 @@ export const useMenuStore = defineStore('Menu', () => {
 				{ id: 5, name: '资源管理', path: '/system/resource', icon: '', childrenList: [] },
 			],
 		},
+		{
+			id: 6,
+			name: '商品管理',
+			path: '/product',
+			icon: 'HomeFilled',
+			childrenList: [{ id: 7, name: '商品管理', path: '/product/management', icon: '', childrenList: [] }],
+		},
 	]
 
 	let store = reactive({

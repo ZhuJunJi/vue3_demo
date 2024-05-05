@@ -32,7 +32,6 @@
 	.layout_container {
 		width: 100%;
 		height: 100vh;
-		background-color: white;
 
 		.layout_slider:not(.el-menu--collapse) {
 			width: $base-menu-width;
@@ -50,7 +49,7 @@
 			left: $base-menu-width;
 			width: calc(100% - $base-menu-width);
 			height: $base-tabbar-height;
-			background-color: rgb(216, 202, 190);
+
 			transition-duration: 0.55s;
 
 			&.collapse {
@@ -65,10 +64,9 @@
 			left: $base-menu-width;
 			width: calc(100% - $base-menu-width);
 			height: calc(100vh - $base-tabbar-height);
-			background-color: white;
+
 			padding: 20px;
 			overflow: auto;
-			display: flex;
 			transition-duration: 0.55s;
 
 			&.collapse {

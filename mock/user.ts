@@ -1,6 +1,6 @@
 import type { MockConfig } from 'vite-plugin-mock'
 import type { LoginReq, LoginRes } from "@/api/user/type"
-import type { ApiResult } from '@/api/ApiResult'
+import type { ApiResult } from '@/types'
 
 export default (config?: MockConfig) => {
 

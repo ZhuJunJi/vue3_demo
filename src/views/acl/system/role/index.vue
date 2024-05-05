@@ -36,6 +36,7 @@
 					<el-popconfirm
 						:title="`确定删除角色:` + row.username"
 						:icon="WarnTriangleFilled"
+						width="200"
 						@confirm="deleteRole(row.id)"
 					>
 						<template #reference>
@@ -117,7 +118,13 @@
 					currentPage.value -= 1
 				}
 				pageQuery()
-			} catch (error) {}
+			} catch (error) {
+				ElNotification({
+					title: 'Error',
+					message: error as string,
+					type: 'error',
+				})
+			}
 		})
 	}
 
