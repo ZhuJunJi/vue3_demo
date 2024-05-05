@@ -1,5 +1,7 @@
 import type { PageQuery } from '@/types'
 
+import type { Resource } from '@/api/resource/type'
+
 export interface RoleCreate {
 	code: string
 	nameZh: string
@@ -37,4 +39,20 @@ export interface Role {
 	updateTime: string
 	// 备注信息
 	remarks: string
+}
+
+export interface RoleResource {
+	// 角色 ID
+	roleId: number
+	// 角色中文名称
+	roleNameZh: string
+	// 角色英文名称
+	roleNameEn: string
+	// 角色资源列表
+	resourceList: Resource[]
+}
+
+export interface RoleResourcesBind {
+	roleId: number
+	resourceIds: number[]
 }

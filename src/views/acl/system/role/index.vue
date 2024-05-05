@@ -15,7 +15,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="updateTime" label="修改时间" min-width="180" />
-			<el-table-column prop="createTime" label="创建时间" min-width="180" />
+			<el-table-column prop="createTime" label="创建时间" min-width="180" />id
 			<el-table-column label="操作" fixed="right" min-width="180">
 				<template #="{ row }">
 					<el-button
@@ -32,6 +32,8 @@
 						:icon="Edit"
 						@click="showDetail(row.id, FormType.UPDATE)"
 					/>
+
+					<el-button link type="primary" :disabled="disabled" :icon="Connection" @click="bindResources(row.id)" />
 
 					<el-popconfirm
 						:title="`确定删除角色:` + row.username"
@@ -63,17 +65,20 @@
 		</template>
 
 		<RoleForm ref="formRef" @submitSuccess="pageQuery"></RoleForm>
+
+		<ResourceTree ref="resourceTreeRef"></ResourceTree>
 	</el-card>
 </template>
 
 <script lang="ts" setup name="User">
 	import { ref, onMounted, reactive } from 'vue'
-	import { Delete, Edit, Plus, Tickets, WarnTriangleFilled } from '@element-plus/icons-vue'
+	import { Delete, Edit, Connection, Plus, Tickets, WarnTriangleFilled } from '@element-plus/icons-vue'
 	import { pageQueryApi, deleteRoleApi, getRoleByIdApi } from '@/api/role'
 	import type { Role } from '@/api/role/type'
 	import { ElNotification } from 'element-plus'
 	import { useDebouncedRef } from '@/utils/useDebouncedRef'
 	import RoleForm from './RoleForm.vue'
+	import ResourceTree from './ResourceTree.vue'
 	import { FormType } from '@/types'
 	import type { RoleFormData } from './index'
 
@@ -144,6 +149,10 @@
 				}
 			} catch (error) {}
 		})
+	}
+	const resourceTreeRef = ref()
+	const bindResources = (roleId: number) => {
+		resourceTreeRef.value.open(roleId)
 	}
 
 	const formRef = ref()
